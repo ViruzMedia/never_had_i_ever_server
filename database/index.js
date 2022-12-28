@@ -10,7 +10,7 @@ const msg = require('../misc/msg.misc');
 class Database {
     async connect() {
         mongo.set('strictQuery', false);
-        await mongo.connect(config.db_string, {useNewUrlParser: true}, function (err) {
+        await mongo.connect(config.db_string, {useNewUrlParser: true, useUnifiedTopology: true, useCreateIndex: true}, function (err) {
             if (err) {
                 console.log(config.db_string)
                 console.log(err);
