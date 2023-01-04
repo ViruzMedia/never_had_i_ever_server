@@ -1,11 +1,13 @@
 //***************PACKAGE-IMPORTS***************
 const express = require('express');
 const middleware = express.Router();
+
 //****************FILE-IMPORTS*****************
 const misc = require('../misc/fnc.misc');
 const msg = require('../misc/msg.misc');
 
 const role_fnc = require('../functions/role.fnc');
+const { response } = require('express');
 
 //****************SCRIPT*****************
 
@@ -51,7 +53,7 @@ middleware.post('/getAllRolesWhereUser', async (req, res) => {
         role_fnc.getAllRolesWhereUser(
             req,
             req.body.uid,
-            res 
+            res
         );
     } else {
         return res.json({
@@ -63,7 +65,8 @@ middleware.post('/getAllRolesWhereUser', async (req, res) => {
 })
 
 middleware.get('/getAllRoles', async (req, res) => {
-    response = await misc.check_user_roles(req, res)
+    const response = await misc.check_user_roles(req, res)
+    console.log(response)
     if (response) {
         role_fnc.getAllRoles(
             req,

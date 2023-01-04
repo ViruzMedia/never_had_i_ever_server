@@ -119,7 +119,8 @@ class Account_Fnc {
                                 error: false,
                                 msg_style: "success",
                                 message: msg.key_accepted,
-                                token: token
+                                token: token,
+                                username: d[0].username
                             })
                         }
                     })
@@ -203,6 +204,9 @@ class Account_Fnc {
                 await account_db_fnc.register_account(req, username, password, firstname, lastname, birthday, street, number, city, plz, email, tel_mobil, res)
             }
         }
+    }
+    async getAllAccounts(req, res) {
+        await account_db_fnc.getAllAccounts(req, res);
     }
 }
 

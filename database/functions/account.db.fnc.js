@@ -50,7 +50,7 @@ class Account_Db_Functions {
     async getAccountByUsername(data) {
         return new Promise((r, j) => account_schema.find({ username: data }, null, (err, data) => {
             if (err) {
-                console.log({ username: data });
+              // ({ username: data });
                 return j(err);
             } else {
                 r(data);
@@ -61,7 +61,7 @@ class Account_Db_Functions {
     async getAccountByEmail(data) {
         return new Promise((r, j) => account_schema.find({ mail: data }, null, (err, data) => {
             if (err) {
-                console.log({ mail: data });
+              // ({ mail: data });
                 return j(err);
             } else {
                 r(data);
@@ -72,12 +72,24 @@ class Account_Db_Functions {
         if (uid && key) {
            await account_schema.findOneAndUpdate({ _id: uid }, { $set: { key: key } }, { new: true }, (err, doc) => {
                 if (err) {
-                    console.log("Error" + err);
+                  // ("Error" + err);
                 } else {
                     return doc
                 }
             });
         }
+    }
+    async getAllAccounts(req, res) {
+       account_schema.find({}, (err, doc) => {
+            if (err) {
+              // (err)
+            } else {
+                return res.status(201).send({
+                    error: false,
+                    data: doc
+                });
+            }
+        })
     }
 }
 

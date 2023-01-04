@@ -47,46 +47,54 @@ class Misc_Functions {
         const uik = req.headers['user_identification_key'];
 
         const data = await account_db_fnc.getAccountByUID(uid)
-        // console.log(data)
-        if (!data || data == undefined) {
-            //console.log('1')
+        //   console.log(data)
+        if (!data || data == undefined || !data[0]) {
+            console.log('Check_User_Roles - no Data - 1')
             return false;
-        } else if (data[0].key !== uik) {
-            //console.log('2')
+        } else if (data[0].key !== uik || data === []) {
+            console.log('Check_User_Roles - no Key - 2')
             return false;
         } else {
             const uik_secret = data[0].password;
             await jwt.verify(uik, uik_secret, async (err, decoded) => {
                 if (err) {
-                    //console.log('3')
+                    console.log('Check_User_Roles - error with verify - 3')
                     return false;
                 }
             })
             const d = await role_db_fnc.getAllRolesWhereUser(req, uid, res);
-            
+
             const route = req.route.path;
             const route_check = await route_db_fnc.getRouteByRoute(req, route, res);
-           // console.log(d)
-            //console.log(route)
-           // console.log(route_check)
-            if (!d || d == undefined || d == 0) {
-            //    console.log('4')
+               console.log(d)
+            //   console.log(route)
+            //   console.log(route_check)
+            console.log(route_check[0].needed_priority)
+            console.log(d[0].priority)
+            console.log("---")
+            console.log(route_check[0].needed_role)
+            console.log(d[0]._id)
+
+
+            if (!d || d == undefined || d == 0 || !d[0]) {
+                console.log('Check_User_Roles - no_route - 4')
                 return false;
-            } else if (!route_check || route_check == undefined) {
-             //   console.log('5')
+            } else if (!route_check || route_check == undefined || !route_check[0]) {
+                console.log('Check_User_Roles - no route found - 5')
                 return false;
             } else if (!d[0]._id) {
-             //    console.log('6')
+                console.log(' Check_User_Roles - no Userr - 6')
                 return false;
-            } else { 
+            } else {
                 if (route_check[0].needed_role == d[0]._id) {
-                    // console.log('7')
+                    console.log(' Check_User_Roles - fine by ID :> - 7')
                     return true;
                 } else if (route_check[0].needed_priority <= d[0].priority) {
-                    //console.log('8')
+
+                    console.log('Check_User_Roles - fine by Priority - 8')
                     return true;
                 } else {
-                    // console.log('9')
+                    console.log('9')
                     return false;
                 }
             }

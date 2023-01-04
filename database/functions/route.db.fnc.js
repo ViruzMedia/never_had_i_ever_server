@@ -39,8 +39,10 @@ class Route_Db_fnc {
     async getRouteByRoute(req, route, res) {
         return new Promise((r, j) => route_schema.find({ route: route }, null, (err, data) => {
             if (err) {
+                console.log(err)
                 return j(err);
             } else {
+                // console.log(data)
                 r(data);
             }
         }))
@@ -54,7 +56,39 @@ class Route_Db_fnc {
             }
         }))
     }
+    async updateRouteByID(req, id, res) {
+        const filter = {
+            _id: req.body._id
+        }
+        console.log(filter)
+        const update = {
+            name: req.body.name,
+            route: req.body.route,
+            needed_priority: req.body.needed_priority,
+            needed_role: req.body.needed_role
+        }
+        console.log(update)
+        await route_schema.findOneAndUpdate(filter, { $set: { name: req.body.name, route: req.body.route, needed_priority: req.body.needed_priority, needed_role: req.body.needed_role } }, { new: true }, (err, data) => {
+            if (err) {
+                console.log("Error" + err);
+            } else {
+                return data
+            }
+        });
+    }
+    async deleteRoute(req, res) {
+        const filter = {
+            _id: req.body._id
+        }
+        await route_schema.deleteOne(filter, (err, data) => {
+            if (err) {
+                console.log("Error" + err);
+            } else {
+                return data
+            }
+        })
+    }
 }
 
 const route_db_fnc = new Route_Db_fnc();
-module.exports = route_db_fnc;
+module.exports = route_db_fnc; 

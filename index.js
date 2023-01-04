@@ -13,17 +13,21 @@ const misc = require('./misc/fnc.misc');
 const database = require('./database/index');
 
 //****************ROUTE-IMPORTS****************
-const account_router = require('./router/account.route');
-const role_router = require('./router/role.route');
+const authentication_router = require('./router/authentication.router');
+const role_router = require('./router/role.router');
 const route_router = require('./router/route.router');
+const account_router = require('./router/account.router')
 
 //****************PREPROCESSING****************
 
 console.log(Date.now() + " " + msg.setup_start)
 const application = express();
 
+application.use(cors());
+
 //console.log(Date.now() + " " + msg.setup_middleware)
-const middleware = express.Router();
+const private = express.Router();
+const games = express.Router()
 
 //console.log(Date.now() + " " + msg.setup_database)
 database.connect();
@@ -36,26 +40,28 @@ application.use(body_parser.urlencoded({ extended: config.urlencoded }));
 application.use(body_parser.json());
 
 //console.log(Date.now() + " " + msg.setup_private)
-application.use('/private', cors(), middleware);
-middleware.use((req, res, next) => {
+application.use('/private', cors(), private);
+private.use((req, res, next) => {
     misc.check_api_token(req, res, next, config.api_secret);
 })
 
-middleware.use('/role-system', role_router)
-middleware.use('/route-system', route_router)
+private.use('/role-system', role_router)
+private.use('/route-system', route_router)
+private.use('/account-system', account_router)
 
 //console.log(Date.now() + " " + msg.setup_public);
-application.use('/public', cors(), account_router)
+application.use('/', cors(), authentication_router)
 
 //*******************STARTUP*******************
 
 //Start the API
-application.listen(config.api_port, () => {
+application.listen(config.api_port, '0.0.0.0', () => {
     console.log(Date.now() + " " + msg.api_started + config.api_domain + ':' + config.api_port)
 });
 application.get('/', function (req, res) {
     res.send({
         timestamp: Date.now(),
+        status: "Online",
         message: msg.api_started + config.api_domain + ':' + config.api_port
     })
 });

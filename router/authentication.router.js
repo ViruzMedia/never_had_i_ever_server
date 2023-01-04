@@ -2,11 +2,14 @@
 const express = require('express')
 //****************FILE-IMPORTS*****************
 const account_fnc = require('../functions/account.fnc');
+const misc = require('../misc/fnc.misc');
+const msg = require('../misc/msg.misc');
 
 //******************SCRIPT*********************
 const router = express.Router();
 
-router.post('/account/register', (req, res)=> {
+router.post('/authentication/register', (req, res)=> {
+    console.log(req.body)
     account_fnc.register_account(
         req,
         req.body.username,
@@ -23,7 +26,7 @@ router.post('/account/register', (req, res)=> {
         res
     )
 })
-router.post('/account/login', (req, res) => {
+router.post('/authentication/login', (req, res) => {
     account_fnc.credential_login(
         req,
         req.body.username,
@@ -32,7 +35,7 @@ router.post('/account/login', (req, res) => {
     )
 })
 
-router.post('/account/key_login', (req, res) => {
+router.post('/authentication/key_login', (req, res) => {
     account_fnc.key_login(
         req,
         req.body.uid,
